@@ -2,11 +2,13 @@
 #define PID_H
 #endif
 
+#include <functional>
+
 template <class T>
 class PIDController
 {
 public:
-  PIDController(double p, double i, double d, T (*pidSource)(), void (*pidOutput)(T output));
+  PIDController(double p, double i, double d, std::function<T(void)> pidSource, std::function<void(T output)> pidOutput);
   void tick();
   void setTarget(T t);
   T getTarget();
@@ -45,9 +47,9 @@ public:
   double getP();
   double getI();
   double getD();
-  void setPIDSource(T (*pidSource)());
-  void setPIDOutput(void (*pidOutput)(T output));
-  void registerTimeFunction(unsigned long (*getSystemTime)());
+  void setPIDSource(std::function<T(void)> pidSource);
+  void setPIDOutput(std::function<void(T output)> pidOutput);
+  void registerTimeFunction(std::function<unsigned long(void)> getSystemTime);
 private:
   double _p;
   double _i;
@@ -76,7 +78,7 @@ private:
   T feedbackWrapUpperBound;
 
   bool timeFunctionRegistered;
-  T (*_pidSource)();
-  void (*_pidOutput)(T output);
-  unsigned long (*_getSystemTime)();
+  std::function<T(void)> _pidSource;
+  std::function<void(T output)> _pidOutput;
+  std::function<unsigned long(void)> _getSystemTime;
 };

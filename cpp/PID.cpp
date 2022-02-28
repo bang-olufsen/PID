@@ -68,7 +68,7 @@
  * @param (*pidOutput) The function pointer for delivering system output.
  */
 template <class T>
-PIDController<T>::PIDController(double p, double i, double d, T (*pidSource)(), void (*pidOutput)(T output))
+PIDController<T>::PIDController(double p, double i, double d, std::function<T(void)> pidSource, std::function<void(T output)> pidOutput)
 {
   _p = p;
   _i = i;
@@ -644,7 +644,7 @@ double PIDController<T>::getD()
  * @param (*getFeedback) A function pointer that retrieves system feedback.
  */
 template <class T>
-void PIDController<T>::setPIDSource(T (*pidSource)())
+void PIDController<T>::setPIDSource(std::function<T(void)> pidSource)
 {
   _pidSource = pidSource;
 }
@@ -666,7 +666,7 @@ void PIDController<T>::setPIDSource(T (*pidSource)())
  * @param (*onUpdate) A function pointer that delivers system output.
  */
 template <class T>
-void PIDController<T>::setPIDOutput(void (*pidOutput)(T output))
+void PIDController<T>::setPIDOutput(std::function<void(T output)> pidOutput)
 {
   _pidOutput = pidOutput;
 }
@@ -685,7 +685,7 @@ void PIDController<T>::setPIDOutput(void (*pidOutput)(T output))
  * @param (*getSystemTime) Pointer to a function that returns system time.
  */
 template <class T>
-void PIDController<T>::registerTimeFunction(unsigned long (*getSystemTime)())
+void PIDController<T>::registerTimeFunction(std::function<unsigned long(void)> getSystemTime)
 {
   _getSystemTime = getSystemTime;
   timeFunctionRegistered = true;
